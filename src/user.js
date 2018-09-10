@@ -48,7 +48,7 @@ class User {
 
     this.habits.forEach(habit => {
       let newHabit = new Habit(habit)
-      newHabit.render()
+      newHabit.render(this)
     })
   }
 }
