@@ -39,8 +39,8 @@ class User {
     userInfo.appendChild(ageLi)
     userInfo.appendChild(genderLi)
 
-    let habitList = document.createElement('ul')
-    habitList.id = `habit-list`
+    let habitList = document.createElement('table')
+    habitList.id = `habit-table`
     let habitDiv = document.createElement('div')
 
     userInfo.appendChild(habitDiv)
