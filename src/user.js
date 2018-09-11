@@ -59,9 +59,7 @@ class User {
     let habitFormSubmit = document.createElement("input");
     habitFormSubmit.type = "submit";
     habitFormSubmit.dataset.userId = this.id;
-    habitFormSubmit.addEventListener("click", e => {
-      console.log(e);
-    });
+    habitForm.addEventListener("submit", createHabit);
     h2Element.innerText = "Add New Habit";
     titleInput.placeholder = "title";
     descriptionInput.placeholder = "description";

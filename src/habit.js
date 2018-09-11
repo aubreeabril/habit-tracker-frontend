@@ -115,4 +115,6 @@ class Habit {
       input.addEventListener('click', checkBox)
     })
   }
+
+
 }

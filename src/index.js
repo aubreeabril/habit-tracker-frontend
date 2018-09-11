@@ -72,3 +72,41 @@ function patchUserHabit(date, userHabit) {
     .then(r => r.json())
     .then(json => console.log(json));
 }
+
+function createHabit(e) {
+  e.preventDefault()
+  let habitData = event.target
+  // console.log(event.target)
+
+  fetch(`${HABITS_URL}`, {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      "Content-Type": 'application/json'
+    },
+    body: JSON.stringify({
+      title: habitData[0].value,
+      description: habitData[1].value
+    })
+  })
+  .then(response => response.json())
+  .then(json => createUserHabit(json, e.target[2].dataset.userId))
+}
+
+function createUserHabit(data, userId) {
+  console.log(userId)
+
+  fetch(`${USER_HABITS_URL}`, {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      "Content-Type": 'application/json'
+    },
+    body: JSON.stringify({
+      user_id: userId,
+      habit_id: data.id
+    })
+  })
+  .then(r => r.json())
+  .then(json => console.log(json))
+}
