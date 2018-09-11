@@ -3,6 +3,7 @@
   <head>
     <meta charset="utf-8">
     <title>Habit Tracker</title>
+    <link rel='stylesheet' type='text/css' href='styles/semantic.min.css'>
     <style>
     .h-list li {
       display:inline;
@@ -16,11 +17,15 @@
     </style>
   </head>
   <body>
-    <h1>Habit Tracker</h1>
+    <div class='ui.container'>
 
-    <div id="main">
-      <ul id="users-list">
-      </ul>
+      <h1 class='ui header'>Habit Tracker</h1>
+
+      <div id="main" class="ui.container">
+        <div id="users-list" class='ui huge middle aligned selection list'>
+        </div>
+      </div>
+
     </div>
 
   <script src="src/habit.js"></script>

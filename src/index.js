@@ -13,15 +13,31 @@ function fetchUsers() {
     .then(response => response.json())
     .then(json => {
       json.forEach(user => {
-        // debugger
         let newUser = new User(user);
         newUser.render();
       });
     });
 }
 
+function fetchHabits(user) {
+  fetch(`${HABITS_URL}`)
+  .then(response => response.json())
+  .then(json => {
+    json.forEach(habit => {
+      habit.user_habits.forEach(uh => {
+        if (uh.user_id == user.id) {
+          let newHabit = new Habit(habit);
+          newHabit.render(user);
+        }
+      })
+    })
+  })
+}
+
 function makeTable() {
   let list = document.querySelector('#habit-table')
+  list.className = 'ui inverted table black fixed'
+  let thead = document.createElement('thead')
 
   let headerRow = document.createElement('tr')
   let nameTh = document.createElement('th')
@@ -41,7 +57,8 @@ function makeTable() {
   fridayTh.innerText = 'Friday'
   saturdayTh.innerText = 'Saturday'
 
-  list.appendChild(headerRow)
+  list.appendChild(thead)
+  thead.appendChild(headerRow)
   headerRow.appendChild(nameTh)
   headerRow.appendChild(sundayTh)
   headerRow.appendChild(mondayTh)
@@ -108,6 +125,11 @@ function checkBox() {
   let habitId = parseInt(event.target.dataset.habitId);
   let checked = event.target.checked;
   let fullDate = event.target.dataset.fullDate;
+
+
+  event.target.disabled = true
+
+
   fetch(`http://localhost:3000/user_habits`)
     .then(response => response.json())
     .then(json =>
@@ -116,42 +138,37 @@ function checkBox() {
         if (uh.user_id == userId && uh.habit_id == habitId && checked) {
           // debugger;
           // userHabit = uh;
-          patchUserHabit(fullDate, uh);
+          let patchData = addUserHabitDate(fullDate, uh);
+          patchUserHabit(patchData, uh.id)
           // console.log(userHabit);
         }
       })
     );
 
-  // console.log(userHabit);
-
-  // if (event.target.checked) {
-  //   patchUserHabit(event.target.dataset.fullDate);
-  // }
 }
 
-function patchUserHabit(date, userHabit) {
+
+function addUserHabitDate(date, userHabit) {
+  return {dates: [...userHabit.dates, date]}
+}
+
+function patchUserHabit(patchData, userHabitId) {
   // console.log(date);
   // console.log(userHabit);
   // console.log(userHabit.dates);
 
-  let data = userHabit;
-  let newDates = userHabit.dates;
-  newDates.push(date);
-  data.dates = newDates;
-
-  console.log(data);
-
-  fetch(`${USER_HABITS_URL}/${userHabit.id}`, {
+  fetch(`${USER_HABITS_URL}/${userHabitId}`, {
     method: "PATCH",
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json"
     },
-    body: JSON.stringify({
-      dates: "1234"
-    })
+    body: JSON.stringify(patchData)
   })
-    .then(r => r.json())
+    .then(r => {
+      r.json()
+      console.log(r.body)
+    })
     .then(json => console.log(json));
 }
 
