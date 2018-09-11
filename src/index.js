@@ -20,6 +20,88 @@ function fetchUsers() {
     });
 }
 
+function makeTable() {
+  let list = document.querySelector('#habit-table')
+
+  let headerRow = document.createElement('tr')
+  let nameTh = document.createElement('th')
+  let sundayTh = document.createElement('th')
+  let mondayTh = document.createElement('th')
+  let tuesdayTh = document.createElement('th')
+  let wednesdayTh = document.createElement('th')
+  let thursdayTh = document.createElement('th')
+  let fridayTh = document.createElement('th')
+  let saturdayTh = document.createElement('th')
+
+  sundayTh.innerText = 'Sunday'
+  mondayTh.innerText = 'Monday'
+  tuesdayTh.innerText = 'Tuesday'
+  wednesdayTh.innerText = 'Wednesday'
+  thursdayTh.innerText = 'Thursday'
+  fridayTh.innerText = 'Friday'
+  saturdayTh.innerText = 'Saturday'
+
+  list.appendChild(headerRow)
+  headerRow.appendChild(nameTh)
+  headerRow.appendChild(sundayTh)
+  headerRow.appendChild(mondayTh)
+  headerRow.appendChild(tuesdayTh)
+  headerRow.appendChild(wednesdayTh)
+  headerRow.appendChild(thursdayTh)
+  headerRow.appendChild(fridayTh)
+  headerRow.appendChild(saturdayTh)
+
+  // figure out the date of the most recent Sunday
+  let today = new Date()
+  // yesterday.setDate(today.getDate() - 1)
+  let sunday = today
+
+  switch(today.getDay()) {
+    case 0:
+      sunday = today
+      break;
+    case 1:
+      sunday.setDate(today.getDate() - 1)
+      break;
+    case 2:
+      sunday.setDate(today.getDate() - 2)
+      break;
+    case 3:
+      sunday.setDate(today.getDate() - 3)
+      break;
+    case 4:
+      sunday.setDate(today.getDate() - 4)
+      break;
+    case 5:
+      sunday.setDate(today.getDate() - 5)
+      break;
+    case 6:
+      sunday.setDate(today.getDate() - 6)
+      break;
+  }
+  let mon = new Date();
+  let tues = new Date();
+  let wed = new Date();
+  let thurs = new Date();
+  let fri = new Date();
+  let sat = new Date;
+
+  mon.setDate(sunday.getDate() + 1)
+  tues.setDate(sunday.getDate() + 2)
+  wed.setDate(sunday.getDate() + 3)
+  thurs.setDate(sunday.getDate() + 4)
+  fri.setDate(sunday.getDate() + 5)
+  sat.setDate(sunday.getDate() + 6)
+
+  sundayTh.dataset.fullDate = sunday
+  mondayTh.dataset.fullDate = mon
+  tuesdayTh.dataset.fullDate = tues
+  wednesdayTh.dataset.fullDate = wed
+  thursdayTh.dataset.fullDate = thurs
+  fridayTh.dataset.fullDate = fri
+  saturdayTh.dataset.fullDate = sat
+}
+
 function checkBox() {
   let userHabit;
   let userId = parseInt(event.target.dataset.userId);
@@ -90,7 +172,11 @@ function createHabit(e) {
     })
   })
   .then(response => response.json())
-  .then(json => createUserHabit(json, e.target[2].dataset.userId))
+  .then(json => {
+    let newHabit = new Habit(json)
+    newHabit.render(e.target[2].dataset.userId)
+    createUserHabit(json, e.target[2].dataset.userId)
+  })
 }
 
 function createUserHabit(data, userId) {
@@ -108,5 +194,5 @@ function createUserHabit(data, userId) {
     })
   })
   .then(r => r.json())
-  .then(json => console.log(json))
+  .then(json => {console.log(json)})
 }

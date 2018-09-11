@@ -46,9 +46,11 @@ class User {
     document.querySelector("#main").appendChild(habitDiv);
     habitDiv.appendChild(habitList);
 
+    makeTable()
+
     this.habits.forEach(habit => {
       let newHabit = new Habit(habit);
-      newHabit.render(this);
+      newHabit.render(this.id);
     });
 
     // Creating form for habit
