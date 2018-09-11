@@ -5,8 +5,8 @@ class Habit {
     this.id = args.id
   }
 
-  render() {
-
+  render(user) {
+    let habitId = this.id
     let list = document.querySelector('#habit-table')
 
     let headerRow = document.createElement('tr')
@@ -92,7 +92,7 @@ class Habit {
     // now render the checkboxes
     let habitRow = document.createElement('tr')
     list.appendChild(habitRow)
-    console.log(this)
+
     let habitTd = document.createElement('td')
     habitTd.innerText = this.title
 
@@ -105,10 +105,14 @@ class Habit {
       let td = document.createElement('td')
       let input = document.createElement('input')
       input.dataset.fullDate = header.dataset.fullDate
+      input.dataset.userId = user.id
+      input.dataset.habitId = habitId
+
       input.setAttribute('type', 'checkbox')
       habitRow.appendChild(td)
       td.appendChild(input)
+
+      input.addEventListener('click', checkBox)
     })
   }
-
 }
