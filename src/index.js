@@ -196,13 +196,13 @@ function createHabit(e) {
     // console.log(e.target.dataset)
 
     createUserHabit(json, e.target.dataset.userId)
-    
+
     let user = User.all().find(u => {
       return u.id == e.target.dataset.userId
     })
-    // newHabit.users.push(e.target.dataset.fullUser)
-    console.log(e.target.dataset.fullUser)
+
     document.getElementById('main').innerHTML = `<div id="users-list" class='ui huge middle aligned selection list'>
+    </div><div id="where-forms-go">
     </div>`
     user.show();
 
@@ -233,7 +233,75 @@ function createUserHabit(data, userId) {
 //   .then(json => console.log(json))
 // }
 
-function updateHabit(e) {
+function getUpdateInfo(e) {
   e.preventDefault()
-  console.log(e.target)
+  let userId = e.target.dataset.userId
+  let habitId = e.target.dataset.habitId
+  let newTitle = event.target.parentElement.children[1].children[0].children[0].value
+  let newDescription = event.target.parentElement.children[1].children[1].children[0].value
+  let data = {habit_id: habitId, title: newTitle, description: newDescription}
+  updateHabit(data, userId)
+}
+
+function updateHabit(data, userId) {
+  fetch(`${HABITS_URL}/${data.habit_id}`, {
+    method: 'PATCH',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(data)
+  })
+  .then(r => r.json())
+  .then(json => {
+    let user = User.all().find(u => {
+      return u.id == userId
+    })
+
+    document.getElementById('main').innerHTML = `<div id="users-list" class='ui huge middle aligned selection list'>
+    </div><div id="where-forms-go">
+    </div>`
+    user.show();
+  })
+  document.getElementById('where-forms-go').innerHTML = ''
+  makeNewHabitForm(userId)
+}
+
+function makeNewHabitForm(userId) {
+  let h2Element = document.createElement("h2");
+  let formContainer = document.createElement("div");
+  let habitForm = document.createElement("div");
+  formContainer.className = 'ui inverted segment'
+  formContainer.id = 'form-container'
+  habitForm.className = 'ui inverted form'
+  let inputContainer = document.createElement("div");
+  inputContainer.className = "equal width fields"
+  let titleField = document.createElement("div");
+  titleField.className = "field"
+  let titleInput = document.createElement("input");
+  titleInput.className = 'ui right labeled input'
+  let descriptionField = document.createElement("div");
+  descriptionField.className = "field"
+  let descriptionInput = document.createElement("input");
+  let habitFormSubmit = document.createElement("input");
+  habitFormSubmit.type = "submit";
+  habitFormSubmit.dataset.userId = userId;
+  habitFormSubmit.className = 'ui button'
+  habitFormSubmit.addEventListener("click", createHabit);
+  h2Element.innerText = "Add New Habit";
+  titleInput.placeholder = "title";
+  descriptionInput.placeholder = "description";
+
+  // saving user ID
+  habitFormSubmit.dataset.userId = userId
+
+  document.getElementById('where-forms-go').appendChild(formContainer)
+  formContainer.appendChild(habitForm);
+  habitForm.appendChild(h2Element);
+  habitForm.appendChild(inputContainer);
+  inputContainer.appendChild(titleField);
+  inputContainer.appendChild(descriptionField);
+  titleField.appendChild(titleInput);
+  descriptionField.appendChild(descriptionInput);
+  habitForm.appendChild(habitFormSubmit);
 }

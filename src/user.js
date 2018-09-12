@@ -32,7 +32,7 @@ class User {
   }
 
   show() {
-    
+
     document.querySelector("#users-list").innerHTML = "";
 
     let userInfo = document.createElement("div");
@@ -66,44 +66,7 @@ class User {
 
     fetchHabits(this.id);
 
-    // Creating form for habit
-    let h2Element = document.createElement("h2");
-    let formContainer = document.createElement("div");
-    let habitForm = document.createElement("div");
-    formContainer.className = 'ui inverted segment'
-    formContainer.id = 'form-container'
-    habitForm.className = 'ui inverted form'
-    let inputContainer = document.createElement("div");
-    inputContainer.className = "equal width fields"
-    let titleField = document.createElement("div");
-    titleField.className = "field"
-    let titleInput = document.createElement("input");
-    titleInput.className = 'ui right labeled input'
-    let descriptionField = document.createElement("div");
-    descriptionField.className = "field"
-    let descriptionInput = document.createElement("input");
-    let habitFormSubmit = document.createElement("input");
-    habitFormSubmit.type = "submit";
-    habitFormSubmit.dataset.userId = this.id;
-    habitFormSubmit.className = 'ui button'
-    habitFormSubmit.addEventListener("click", createHabit);
-    h2Element.innerText = "Add New Habit";
-    titleInput.placeholder = "title";
-    descriptionInput.placeholder = "description";
+    makeNewHabitForm(this.id)
 
-    // saving user ID
-    habitFormSubmit.dataset.userId = this.id
-
-
-
-    document.querySelector("#main").appendChild(formContainer);
-    formContainer.appendChild(habitForm);
-    habitForm.appendChild(h2Element);
-    habitForm.appendChild(inputContainer);
-    inputContainer.appendChild(titleField);
-    inputContainer.appendChild(descriptionField);
-    titleField.appendChild(titleInput);
-    descriptionField.appendChild(descriptionInput);
-    habitForm.appendChild(habitFormSubmit);
   }
 }

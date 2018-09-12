@@ -1,6 +1,5 @@
 class Habit {
   constructor(args) {
-    console.log(args)
     this.title = args.title
     this.description = args.description
     this.id = args.id
@@ -19,7 +18,7 @@ class Habit {
     let habitTd = document.createElement('td')
     habitTd.innerText = this.title
     habitTd.addEventListener('click', e => {
-      this.renderEditForm()
+      this.renderEditForm(userId)
     })
 
     habitRow.appendChild(habitTd)
@@ -35,7 +34,6 @@ class Habit {
     headers.shift()
 
     headers.forEach(header => {
-      console.log(this)
       let userId = this.users[0].id
       let habitId = this.id
 
@@ -69,7 +67,7 @@ class Habit {
     })
   }
 
-  renderEditForm() {
+  renderEditForm(userId) {
     let h2Element = document.createElement("h2");
     let formContainer = document.querySelector("#form-container");
     formContainer.innerHTML = ''
@@ -87,14 +85,22 @@ class Habit {
     let descriptionInput = document.createElement("input");
     let habitFormSubmit = document.createElement("input");
     habitFormSubmit.type = "submit";
-    habitFormSubmit.dataset.userId = this.id;
+    habitFormSubmit.dataset.habitId = this.id;
+    habitFormSubmit.dataset.userId = userId
     habitFormSubmit.className = 'ui button'
-    habitFormSubmit.addEventListener("click", updateHabit);
+    habitFormSubmit.addEventListener("click", getUpdateInfo);
     h2Element.innerText = "Edit Habit";
     titleInput.value = this.title;
     descriptionInput.value = this.description;
+    let deleteButton = document.createElement('button')
+    deleteButton.className = 'ui inverted red button'
+    deleteButton.dataset.habitId = this.id
+    deleteButton.innerText = 'Delete'
+    deleteButton.addEventListener('click', e => {
+      this.deleteHabit(e)
+    })
 
-    document.querySelector("#main").appendChild(formContainer);
+    document.querySelector("#where-forms-go").appendChild(formContainer);
     formContainer.appendChild(habitForm);
     habitForm.appendChild(h2Element);
     habitForm.appendChild(inputContainer);
@@ -103,5 +109,17 @@ class Habit {
     titleField.appendChild(titleInput);
     descriptionField.appendChild(descriptionInput);
     habitForm.appendChild(habitFormSubmit);
+    habitForm.appendChild(deleteButton)
   }
+
+  deleteHabit(e) {
+    document.getElementById('where-forms-go').innerHTML = ''
+    document.getElementById(`habit-${this.id}`).remove()
+    fetch(`${HABITS_URL}/${this.id}`, {
+      method: 'DELETE'
+    })
+
+    makeNewHabitForm(e.target.dataset.userId)
+  }
+
 }
