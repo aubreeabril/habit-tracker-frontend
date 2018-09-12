@@ -144,7 +144,6 @@ function checkBox() {
         }
       })
     );
-
 }
 
 
@@ -174,8 +173,11 @@ function patchUserHabit(patchData, userHabitId) {
 
 function createHabit(e) {
   e.preventDefault()
-  let habitData = event.target
-  // console.log(event.target)
+
+  let habitTitle = event.target.parentElement.children[1].children[0].children[0].value
+
+  let habitDescription = event.target.parentElement.children[1].children[1].children[0].value
+
 
   fetch(`${HABITS_URL}`, {
     method: 'POST',
@@ -184,20 +186,26 @@ function createHabit(e) {
       "Content-Type": 'application/json'
     },
     body: JSON.stringify({
-      title: habitData[0].value,
-      description: habitData[1].value
+      title: habitTitle,
+      description: habitDescription
     })
   })
   .then(response => response.json())
   .then(json => {
     let newHabit = new Habit(json)
-    newHabit.render(e.target[2].dataset.userId)
-    createUserHabit(json, e.target[2].dataset.userId)
+    // console.log(e.target.dataset)
+
+    createUserHabit(json, e.target.dataset.userId)
+
+    // newHabit.users.push(e.target.dataset.fullUser)
+    console.log(e.target.dataset.fullUser)
+    e.target.dataset.fullUser.show();
+
   })
 }
 
 function createUserHabit(data, userId) {
-  console.log(userId)
+
 
   fetch(`${USER_HABITS_URL}`, {
     method: 'POST',
@@ -211,5 +219,16 @@ function createUserHabit(data, userId) {
     })
   })
   .then(r => r.json())
-  .then(json => {console.log(json)})
+  .then(json => {})
+}
+
+// function findUserHabit(userId, habitId) {
+//   fetch(`${USER_HABITS_URL}`)
+//   .then(r => r.json())
+//   .then(json => console.log(json))
+// }
+
+function updateHabit(e) {
+  e.preventDefault()
+  console.log(e.target)
 }

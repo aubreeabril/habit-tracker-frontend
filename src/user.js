@@ -63,6 +63,7 @@ class User {
     let formContainer = document.createElement("div");
     let habitForm = document.createElement("div");
     formContainer.className = 'ui inverted segment'
+    formContainer.id = 'form-container'
     habitForm.className = 'ui inverted form'
     let inputContainer = document.createElement("div");
     inputContainer.className = "equal width fields"
@@ -77,10 +78,16 @@ class User {
     habitFormSubmit.type = "submit";
     habitFormSubmit.dataset.userId = this.id;
     habitFormSubmit.className = 'ui button'
-    habitForm.addEventListener("submit", createHabit);
+    habitFormSubmit.addEventListener("click", createHabit);
     h2Element.innerText = "Add New Habit";
     titleInput.placeholder = "title";
     descriptionInput.placeholder = "description";
+
+    let user = this
+    // saving the whole user object in a date attribute to be used when rendering a new habit
+    habitFormSubmit.dataset.fullUser = user
+
+
 
     document.querySelector("#main").appendChild(formContainer);
     formContainer.appendChild(habitForm);
