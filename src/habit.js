@@ -97,10 +97,12 @@ class Habit {
     deleteButton.dataset.habitId = this.id
     deleteButton.innerText = 'Delete'
     deleteButton.addEventListener('click', e => {
-      this.deleteHabit(e)
+      if (confirm('Are you sure?')) {
+        this.deleteHabit(e)
+      }
     })
 
-    document.querySelector("#where-forms-go").appendChild(formContainer);
+    document.querySelector("#edit-habit-form").appendChild(formContainer);
     formContainer.appendChild(habitForm);
     habitForm.appendChild(h2Element);
     habitForm.appendChild(inputContainer);
@@ -113,7 +115,7 @@ class Habit {
   }
 
   deleteHabit(e) {
-    document.getElementById('where-forms-go').innerHTML = ''
+    document.getElementById('edit-habit-form').innerHTML = ''
     document.getElementById(`habit-${this.id}`).remove()
     fetch(`${HABITS_URL}/${this.id}`, {
       method: 'DELETE'

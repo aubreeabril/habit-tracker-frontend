@@ -16639,19 +16639,19 @@ ol.ui.list ol li,
 
 .ui.selection.list.list > .item:hover,
 .ui.selection.list > .item:hover {
-  background: rgba(0, 0, 0, 0.03);
+  background: rgba(0, 128, 128, 0.8);
   color: rgba(0, 0, 0, 0.8);
 }
 
 .ui.selection.list .list > .item:active,
 .ui.selection.list > .item:active {
-  background: rgba(0, 0, 0, 0.05);
+  background: rgba(0, 128, 128, 0.8);
   color: rgba(0, 0, 0, 0.9);
 }
 
 .ui.selection.list .list > .item.active,
 .ui.selection.list > .item.active {
-  background: rgba(0, 0, 0, 0.05);
+  background: rgba(0, 128, 128, 0.8);
   color: rgba(0, 0, 0, 1);
 }
 

@@ -32,6 +32,23 @@ class User {
   }
 
   show() {
+    document.getElementById('users-header').innerHTML = ''
+
+    if (document.getElementById('newUserButton')) {
+      document.getElementById('newUserButton').remove()
+    }
+
+    if (document.querySelector('#newHabitButton')) {
+      document.querySelector('#newHabitButton').remove();
+    }
+    let habitMenuButton = document.createElement('div');
+    habitMenuButton.className = 'item';
+    habitMenuButton.id = 'newHabitButton';
+    habitMenuButton.innerText = 'Add Habit';
+    habitMenuButton.addEventListener('click', e => {
+      toggleHabitForm();
+    })
+    document.getElementById('menu').appendChild(habitMenuButton);
 
     document.querySelector("#users-list").innerHTML = "";
 
@@ -42,18 +59,37 @@ class User {
     let nameLi = document.createElement("div");
     let ageLi = document.createElement("div");
     let genderLi = document.createElement("div");
+    let deleteUser = document.createElement('div');
+    let deleteButton = document.createElement('button');
+
     nameLi.className = 'item'
     ageLi.className = 'item'
     genderLi.className = 'item'
+    deleteUser.className = 'item'
+    deleteButton.className = 'ui button'
     // debugger
     nameLi.innerText = this.name;
     ageLi.innerText = this.age;
     genderLi.innerText = this.gender;
+    deleteButton.innerText = `Delete ${this.name}`
 
     document.querySelector("#main").appendChild(userInfo);
     userInfo.appendChild(nameLi);
     userInfo.appendChild(ageLi);
     userInfo.appendChild(genderLi);
+    userInfo.appendChild(deleteUser);
+    deleteUser.appendChild(deleteButton)
+
+    deleteUser.addEventListener('click', e => {
+      document.getElementById(`info-${this.id}`).remove()
+      document.getElementById('habit-table').remove()
+
+      if (confirm('Are you sure?')) {
+        this.deleteUser()
+      } else {
+        this.show() // this makes the double form thing happen
+      }
+    })
 
     let habitList = document.createElement("table");
     habitList.id = `habit-table`;
@@ -68,5 +104,16 @@ class User {
 
     makeNewHabitForm(this.id)
 
+  }
+
+  deleteUser() {
+    fetch(`${USERS_URL}/${this.id}`, {
+      method: 'DELETE'
+    })
+    .then(r => {
+      document.getElementById('user-form-background').remove()
+      document.getElementById('form-container').remove()
+      init()
+    })
   }
 }

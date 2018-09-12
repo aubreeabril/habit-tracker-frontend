@@ -1,11 +1,79 @@
 const USERS_URL = "http://localhost:3000/users";
 const HABITS_URL = "http://localhost:3000/habits";
 const USER_HABITS_URL = "http://localhost:3000/user_habits";
+let showHabitForm = false;
+let showUserForm = false;
 
 document.addEventListener("DOMContentLoaded", init);
 
 function init() {
   fetchUsers();
+  addUserMenuButton();
+  makeNewUserForm();
+
+  document.getElementById('users-header').innerText = 'Select User'
+}
+
+function addUserMenuButton() {
+  if (document.querySelector('#newHabitButton')) {
+    document.querySelector('#newHabitButton').remove();
+  }
+  let userMenuButton = document.createElement('div');
+  userMenuButton.className = 'item';
+  userMenuButton.id = 'newUserButton';
+  userMenuButton.innerText = 'Add User';
+  userMenuButton.addEventListener('click', e => {
+    toggleUserForm();
+  })
+  document.getElementById('menu').appendChild(userMenuButton);
+}
+
+function makeNewUserForm() {
+  let userFormContainer = document.getElementById('add-user-form')
+  userFormContainer.style.display = 'none'
+  let userFormBackground = document.createElement('div')
+  userFormBackground.id = 'user-form-background'
+  userFormBackground.className = 'ui inverted segment'
+  let userForm = document.createElement('div')
+  userForm.className = 'ui inverted form'
+  let formTitle = document.createElement('h4')
+  formTitle.innerText = 'Add New User'
+  let inputContainer = document.createElement('div')
+  inputContainer.className = 'equal width fields'
+  let userFormSubmit = document.createElement('input')
+  userFormSubmit.type = 'submit'
+  userFormSubmit.className = 'ui button'
+  userFormSubmit.addEventListener('click', e => {
+    createUser(getUserData(e));
+    toggleUserForm();
+  })
+  let nameFieldDiv = document.createElement('div')
+  nameFieldDiv.className = 'field'
+  let nameInput = document.createElement('input')
+  nameInput.className = 'ui right labeled input'
+  nameInput.placeholder = 'name'
+  let ageFieldDiv = document.createElement('div')
+  ageFieldDiv.className = 'field'
+  let ageInput = document.createElement('input')
+  ageInput.className = 'ui right labeled input'
+  ageInput.placeholder = 'age'
+  let genderFieldDiv = document.createElement('div')
+  genderFieldDiv.className = 'field'
+  let genderInput = document.createElement('input')
+  genderInput.className = 'ui right labeled input'
+  genderInput.placeholder = 'gender'
+
+  genderFieldDiv.appendChild(genderInput)
+  ageFieldDiv.appendChild(ageInput)
+  nameFieldDiv.appendChild(nameInput)
+  inputContainer.appendChild(nameFieldDiv)
+  inputContainer.appendChild(ageFieldDiv)
+  inputContainer.appendChild(genderFieldDiv)
+  userForm.appendChild(formTitle)
+  userForm.appendChild(inputContainer)
+  userForm.appendChild(userFormSubmit)
+  userFormBackground.appendChild(userForm)
+  userFormContainer.appendChild(userFormBackground)
 }
 
 function fetchUsers() {
@@ -32,6 +100,51 @@ function fetchHabits(userId) {
       })
     })
   })
+}
+
+function createUser(data) {
+  fetch(`${USERS_URL}`, {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(data)
+  })
+  .then(r => r.json())
+  .then(json => {
+    let newUser = new User(json)
+    newUser.render()
+  })
+}
+
+function toggleHabitForm() {
+  showHabitForm = !showHabitForm
+  if (showHabitForm) {
+    document.querySelector('#add-habit-form').style.display = 'block';
+  } else {
+    document.querySelector('#add-habit-form').style.display = 'none';
+  }
+}
+
+function toggleUserForm() {
+  showUserForm = !showUserForm
+  if (showUserForm) {
+    document.querySelector('#add-user-form').style.display = 'block';
+  } else {
+    document.querySelector('#add-user-form').style.display = 'none';
+  }
+}
+
+function getUserData(e) {
+  let userName = e.path[1].children[1].children[0].children[0].value
+  let userAge = e.path[1].children[1].children[1].children[0].value
+  let userGender = e.path[1].children[1].children[2].children[0].value
+  return {
+    name: userName,
+    age: userAge,
+    gender: userGender
+  }
 }
 
 function makeTable() {
@@ -202,7 +315,8 @@ function createHabit(e) {
     })
 
     document.getElementById('main').innerHTML = `<div id="users-list" class='ui huge middle aligned selection list'>
-    </div><div id="where-forms-go">
+    </div><div id="add-habit-form">
+    </div><div id="edit-habit-form">
     </div>`
     user.show();
 
@@ -259,16 +373,18 @@ function updateHabit(data, userId) {
     })
 
     document.getElementById('main').innerHTML = `<div id="users-list" class='ui huge middle aligned selection list'>
-    </div><div id="where-forms-go">
+    </div><div id="add-habit-form">
+    </div><div id="edit-habit-form">
     </div>`
     user.show();
   })
-  document.getElementById('where-forms-go').innerHTML = ''
+  document.getElementById('add-habit-form').innerHTML = ''
   makeNewHabitForm(userId)
 }
 
 function makeNewHabitForm(userId) {
-  let h2Element = document.createElement("h2");
+  document.getElementById('add-habit-form').style.display = 'none'
+  let h4Element = document.createElement("h4");
   let formContainer = document.createElement("div");
   let habitForm = document.createElement("div");
   formContainer.className = 'ui inverted segment'
@@ -288,16 +404,16 @@ function makeNewHabitForm(userId) {
   habitFormSubmit.dataset.userId = userId;
   habitFormSubmit.className = 'ui button'
   habitFormSubmit.addEventListener("click", createHabit);
-  h2Element.innerText = "Add New Habit";
+  h4Element.innerText = "Add New Habit";
   titleInput.placeholder = "title";
   descriptionInput.placeholder = "description";
 
   // saving user ID
   habitFormSubmit.dataset.userId = userId
 
-  document.getElementById('where-forms-go').appendChild(formContainer)
+  document.getElementById('add-habit-form').appendChild(formContainer)
   formContainer.appendChild(habitForm);
-  habitForm.appendChild(h2Element);
+  habitForm.appendChild(h4Element);
   habitForm.appendChild(inputContainer);
   inputContainer.appendChild(titleField);
   inputContainer.appendChild(descriptionField);

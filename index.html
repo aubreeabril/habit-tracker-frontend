@@ -4,29 +4,26 @@
     <meta charset="utf-8">
     <title>Habit Tracker</title>
     <link rel='stylesheet' type='text/css' href='styles/semantic.min.css'>
-    <style>
-    .h-list li {
-      display:inline;
-      padding-right: 10px;
-    }
 
-    div {
-      margin:10px
-    }
-
-    </style>
   </head>
   <body>
     <div class='ui.container'>
+      <div id='menu' class="ui massive inverted menu">
+        <div class="header item">
+          <a href="index.html">Habit Tracker</a>
+        </div>
+      </div>
 
-      <h1 class='ui header'>Habit Tracker</h1>
-
-      <div id="main" class="ui.container">
-        <div id="users-list" class='ui huge middle aligned selection list'>
+      <div id="main" class="ui container">
+        <div id="users-header" class="ui large header">
         </div>
 
-        <div id="where-forms-go">
+        <div id="users-list" class='ui large middle aligned selection list'>
         </div>
+
+        <div id="add-habit-form"></div>
+        <div id="edit-habit-form"></div>
+        <div id="add-user-form"></div>
 
       </div>
 
