@@ -8,9 +8,8 @@ class Habit {
     this.users = args.users
   }
 
-  render(user) {
+  render(userId) {
     let habitId = this.id
-    let userId = user.id
 
     // now render the checkboxes
     let habitRow = document.createElement('tr')

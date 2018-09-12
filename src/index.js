@@ -19,15 +19,15 @@ function fetchUsers() {
     });
 }
 
-function fetchHabits(user) {
+function fetchHabits(userId) {
   fetch(`${HABITS_URL}`)
   .then(response => response.json())
   .then(json => {
     json.forEach(habit => {
       habit.user_habits.forEach(uh => {
-        if (uh.user_id == user.id) {
+        if (uh.user_id == userId) {
           let newHabit = new Habit(habit);
-          newHabit.render(user);
+          newHabit.render(userId);
         }
       })
     })
@@ -196,10 +196,15 @@ function createHabit(e) {
     // console.log(e.target.dataset)
 
     createUserHabit(json, e.target.dataset.userId)
-
+    
+    let user = User.all().find(u => {
+      return u.id == e.target.dataset.userId
+    })
     // newHabit.users.push(e.target.dataset.fullUser)
     console.log(e.target.dataset.fullUser)
-    e.target.dataset.fullUser.show();
+    document.getElementById('main').innerHTML = `<div id="users-list" class='ui huge middle aligned selection list'>
+    </div>`
+    user.show();
 
   })
 }

@@ -1,3 +1,5 @@
+let allUsers = []
+
 class User {
   constructor(args) {
     this.name = args.name;
@@ -6,6 +8,11 @@ class User {
     this.id = args.id;
     this.habits = args.habits;
     this.user_habits = args.user_habits
+    allUsers.push(this)
+  }
+
+  static all() {
+    return allUsers
   }
 
   render() {
@@ -25,6 +32,7 @@ class User {
   }
 
   show() {
+    
     document.querySelector("#users-list").innerHTML = "";
 
     let userInfo = document.createElement("div");
@@ -56,7 +64,7 @@ class User {
 
     makeTable()
 
-    fetchHabits(this);
+    fetchHabits(this.id);
 
     // Creating form for habit
     let h2Element = document.createElement("h2");
@@ -83,9 +91,8 @@ class User {
     titleInput.placeholder = "title";
     descriptionInput.placeholder = "description";
 
-    let user = this
-    // saving the whole user object in a date attribute to be used when rendering a new habit
-    habitFormSubmit.dataset.fullUser = user
+    // saving user ID
+    habitFormSubmit.dataset.userId = this.id
 
 
 
