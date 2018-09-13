@@ -24,6 +24,8 @@ class User {
     nameDiv.innerText = this.name;
 
     newItem.addEventListener("click", e => {
+      this.clearPage();
+      this.addNewHabitButtonToMenu();
       this.show();
     });
 
@@ -31,8 +33,9 @@ class User {
     newItem.appendChild(nameDiv)
   }
 
-  show() {
-    document.getElementById('users-header').innerHTML = ''
+  clearPage() {
+    document.getElementById('users-header').innerHTML = "";
+    document.querySelector("#users-list").innerHTML = "";
 
     if (document.getElementById('newUserButton')) {
       document.getElementById('newUserButton').remove()
@@ -41,17 +44,38 @@ class User {
     if (document.querySelector('#newHabitButton')) {
       document.querySelector('#newHabitButton').remove();
     }
+  }
+
+  addNewHabitButtonToMenu() {
     let habitMenuButton = document.createElement('div');
     habitMenuButton.className = 'item';
     habitMenuButton.id = 'newHabitButton';
     habitMenuButton.innerText = 'Add Habit';
+    makeNewHabitForm();
     habitMenuButton.addEventListener('click', e => {
       toggleHabitForm();
     })
     document.getElementById('menu').appendChild(habitMenuButton);
+  }
 
-    document.querySelector("#users-list").innerHTML = "";
+  show() {
+    this.buildUserHeaderList();
 
+    let habitList = document.createElement("table");
+    habitList.id = `habit-table`;
+    let habitDiv = document.createElement("div");
+
+    document.querySelector("#main").appendChild(habitDiv);
+    habitDiv.appendChild(habitList);
+
+    makeTable()
+
+    fetchHabits(this.id);
+
+    // makeNewHabitForm(this.id)
+  }
+
+  buildUserHeaderList() {
     let userInfo = document.createElement("div");
     userInfo.id = `info-${this.id}`;
     userInfo.className = "ui big horizontal divided list";
@@ -67,7 +91,7 @@ class User {
     genderLi.className = 'item'
     deleteUser.className = 'item'
     deleteButton.className = 'ui button'
-    // debugger
+
     nameLi.innerText = this.name;
     ageLi.innerText = this.age;
     genderLi.innerText = this.gender;
@@ -80,7 +104,11 @@ class User {
     userInfo.appendChild(deleteUser);
     deleteUser.appendChild(deleteButton)
 
-    deleteUser.addEventListener('click', e => {
+    this.handleDelete(deleteButton);
+  }
+
+  handleDelete(deleteButton) {
+    deleteButton.addEventListener('click', e => {
       document.getElementById(`info-${this.id}`).remove()
       document.getElementById('habit-table').remove()
 
@@ -90,20 +118,6 @@ class User {
         this.show() // this makes the double form thing happen
       }
     })
-
-    let habitList = document.createElement("table");
-    habitList.id = `habit-table`;
-    let habitDiv = document.createElement("div");
-
-    document.querySelector("#main").appendChild(habitDiv);
-    habitDiv.appendChild(habitList);
-
-    makeTable()
-
-    fetchHabits(this.id);
-
-    makeNewHabitForm(this.id)
-
   }
 
   deleteUser() {

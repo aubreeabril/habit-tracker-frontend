@@ -17,6 +17,8 @@ class Habit {
 
     let habitTd = document.createElement('td')
     habitTd.innerText = this.title
+    habitTd.className = 'ui icon'
+    habitTd.setAttribute('data-content', `${this.description}`)
     habitTd.addEventListener('click', e => {
       this.renderEditForm(userId)
     })

@@ -45,6 +45,9 @@ function makeNewUserForm() {
   userFormSubmit.className = 'ui button'
   userFormSubmit.addEventListener('click', e => {
     createUser(getUserData(e));
+    nameInput.value = ''
+    ageInput.value = ''
+    genderInput.value = ''
     toggleUserForm();
   })
   let nameFieldDiv = document.createElement('div')
@@ -395,7 +398,7 @@ function makeNewHabitForm(userId) {
   let titleField = document.createElement("div");
   titleField.className = "field"
   let titleInput = document.createElement("input");
-  titleInput.className = 'ui right labeled input'
+  titleInput.className = 'ui search selection dropdown'
   let descriptionField = document.createElement("div");
   descriptionField.className = "field"
   let descriptionInput = document.createElement("input");
