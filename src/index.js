@@ -10,7 +10,7 @@ function init() {
   fetchUsers();
   addUserMenuButton();
   makeNewUserForm();
-
+  fetchHabits();
   document.getElementById('users-header').innerText = 'Select User'
 }
 
@@ -90,18 +90,18 @@ function fetchUsers() {
     });
 }
 
-function fetchHabits(userId) {
+function fetchHabits() {
   fetch(`${HABITS_URL}`)
   .then(response => response.json())
   .then(json => {
-    json.forEach(habit => {
-      habit.user_habits.forEach(uh => {
-        if (uh.user_id == userId) {
-          let newHabit = new Habit(habit);
-          newHabit.render(userId);
-        }
-      })
-    })
+    makeHabits(json)
+  })
+}
+
+function makeHabits(jsonData) {
+  console.log(jsonData)
+  jsonData.forEach(habit => {
+    new Habit(habit);
   })
 }
 
@@ -150,7 +150,7 @@ function getUserData(e) {
   }
 }
 
-function makeTable() {
+function makeTable(userId) {
   let list = document.querySelector('#habit-table')
   list.className = 'ui inverted table black fixed'
   let thead = document.createElement('thead')
@@ -164,6 +164,14 @@ function makeTable() {
   let thursdayTh = document.createElement('th')
   let fridayTh = document.createElement('th')
   let saturdayTh = document.createElement('th')
+
+  sundayTh.dataset.userId = userId
+  mondayTh.dataset.userId = userId
+  tuesdayTh.dataset.userId = userId
+  wednesdayTh.dataset.userId = userId
+  thursdayTh.dataset.userId = userId
+  fridayTh.dataset.userId = userId
+  saturdayTh.dataset.userId = userId
 
   sundayTh.innerText = 'Sunday'
   mondayTh.innerText = 'Monday'
@@ -309,7 +317,8 @@ function createHabit(e) {
   .then(response => response.json())
   .then(json => {
     let newHabit = new Habit(json)
-    // console.log(e.target.dataset)
+
+    console.log(e.target.dataset.userId)
 
     createUserHabit(json, e.target.dataset.userId)
 
@@ -317,12 +326,15 @@ function createHabit(e) {
       return u.id == e.target.dataset.userId
     })
 
-    document.getElementById('main').innerHTML = `<div id="users-list" class='ui huge middle aligned selection list'>
-    </div><div id="add-habit-form">
-    </div><div id="edit-habit-form">
-    </div>`
-    user.show();
+    // document.getElementById('main').innerHTML = `<div id="users-list" class='ui huge middle aligned selection list'>
+    // </div><div id="add-habit-form">
+    // </div><div id="edit-habit-form">
+    // </div>`
 
+    // document.getElementById('add-habit-form').innerHTML = ''
+    document.getElementById('edit-habit-form').innerHTML = ''
+    newHabit.render(e.target.dataset.userId);
+    newHabit.renderCheckboxes()
   })
 }
 
@@ -383,6 +395,7 @@ function updateHabit(data, userId) {
   })
   document.getElementById('add-habit-form').innerHTML = ''
   makeNewHabitForm(userId)
+  console.log(Habit.all())
 }
 
 function makeNewHabitForm(userId) {
@@ -395,10 +408,36 @@ function makeNewHabitForm(userId) {
   habitForm.className = 'ui inverted form'
   let inputContainer = document.createElement("div");
   inputContainer.className = "equal width fields"
-  let titleField = document.createElement("div");
-  titleField.className = "field"
-  let titleInput = document.createElement("input");
-  titleInput.className = 'ui search selection dropdown'
+
+  let titleField = document.createElement("select");
+  titleField.className = "ui search dropdown"
+  let option = document.createElement('option')
+  option.value = ''
+
+  // make dropdown items
+  let habitTitles = Habit.all().map(habit => {
+    return habit.title
+  })
+
+  // console.log(habitTitles)
+  // debugger
+
+  let uniqueTitles = [...new Set(habitTitles)];
+
+  uniqueTitles.forEach(title => {
+    // let usedTitles = [];
+
+    // if (!usedTitles.includes(title)) {
+      let div = document.createElement('option')
+      div.value = `${title}`
+      // div.setAttribute('data-value', `${habit.title}`)
+      div.innerText = title
+      titleField.appendChild(div)
+      // usedTitles.push(title)
+    // }
+  })
+  //
+
   let descriptionField = document.createElement("div");
   descriptionField.className = "field"
   let descriptionInput = document.createElement("input");
@@ -408,7 +447,6 @@ function makeNewHabitForm(userId) {
   habitFormSubmit.className = 'ui button'
   habitFormSubmit.addEventListener("click", createHabit);
   h4Element.innerText = "Add New Habit";
-  titleInput.placeholder = "title";
   descriptionInput.placeholder = "description";
 
   // saving user ID
@@ -420,7 +458,6 @@ function makeNewHabitForm(userId) {
   habitForm.appendChild(inputContainer);
   inputContainer.appendChild(titleField);
   inputContainer.appendChild(descriptionField);
-  titleField.appendChild(titleInput);
   descriptionField.appendChild(descriptionInput);
   habitForm.appendChild(habitFormSubmit);
 }

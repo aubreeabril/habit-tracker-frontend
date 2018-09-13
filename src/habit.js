@@ -1,3 +1,5 @@
+let allHabits = []
+
 class Habit {
   constructor(args) {
     this.title = args.title
@@ -5,6 +7,12 @@ class Habit {
     this.id = args.id
     this.user_habits = args.user_habits
     this.users = args.users
+    allHabits.push(this)
+    // console.log('constructor')
+  }
+
+  static all() {
+    return allHabits
   }
 
   render(userId) {
@@ -25,9 +33,11 @@ class Habit {
 
     habitRow.appendChild(habitTd)
 
-    this.renderCheckboxes()
+    // this.renderCheckboxes()
 
-    this.checkCheckboxes()
+    // this.checkCheckboxes()
+
+    // makeNewHabitForm(userId) // adds items to dropdown but can't select them
   }
 
   renderCheckboxes() {
@@ -36,7 +46,8 @@ class Habit {
     headers.shift()
 
     headers.forEach(header => {
-      let userId = this.users[0].id
+      // debugger
+      let userId = header.dataset.userId
       let habitId = this.id
 
       let td = document.createElement('td')
@@ -53,12 +64,14 @@ class Habit {
 
   checkCheckboxes() {
     let habitRow = document.querySelector(`#habit-${this.id}`);
+    let headers = Array.from(document.querySelector('#habit-table').querySelectorAll('th'))
+
     let checkboxes = habitRow.querySelectorAll('input');
-    let userId = this.users[0].id
+    let userId = headers[1].dataset.userId
     let foundUserHabit = this.user_habits.find(uh => {
       return uh.user_id == userId
     })
-
+  
     foundUserHabit.dates.forEach(date => {
       checkboxes.forEach(cb => {
         if(cb.dataset.fullDate.split(' ').slice(0, 4).join(' ') == date.split(' ').slice(0, 4).join(' ')) {
