@@ -88,10 +88,42 @@ class User {
       habit.render(this.id)
       habit.renderCheckboxes()
       habit.checkCheckboxes()
+      this.renderHabitCard(habit)
     })
 
     makeNewHabitForm(this.id)
 
+  }
+  //
+  // loadHabits() {
+  //   console.log(this.habits)
+  //
+  //   this.habits.forEach(habit => {
+  //     this.renderHabitCard(habit)
+  //   })
+  // }
+
+  renderHabitCard(habit) {
+    console.log(habit.user_habits)
+    let cardBase = document.createElement('div')
+    cardBase.className = 'ui card red'
+    let cardContent = document.createElement('div')
+    cardContent.className = 'content'
+    let cardHeader = document.createElement('div')
+    cardHeader.className = 'header'
+    cardHeader.innerText = habit.title
+    let cardDescription = document.createElement('div')
+    cardDescription.className = 'description'
+    cardDescription.innerText = habit.description
+    let cardExtra = document.createElement('div')
+    cardExtra.className = 'extra content'
+    cardExtra.innerText = `Days completed: ${habit.user_habits[0].dates.length}`
+
+    document.querySelector('#main').appendChild(cardBase)
+    cardBase.appendChild(cardContent)
+    cardContent.appendChild(cardHeader)
+    cardContent.appendChild(cardDescription)
+    cardBase.appendChild(cardExtra)
   }
 
   buildUserHeaderList() {
