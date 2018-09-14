@@ -78,25 +78,8 @@ class User {
     document.querySelector("#main").appendChild(habitDiv);
     habitDiv.appendChild(habitList);
 
-    // let divider = document.createElement('div')
-    // divider.className = 'ui divider'
-    // document.querySelector('#main').appendChild(divider)
-
-    // let progressDiv = document.createElement('div')
-    // progressDiv.className = 'ten wide column'
-    // progressDiv.id = 'progress-div'
-    //
-    // let progressHeader = document.createElement('h3')
-    // progressHeader.innerText = 'This Week'
-    //
-    // progressDiv.appendChild(progressHeader)
-
     let gridContainer = document.createElement('div')
     gridContainer.id = 'grid-container'
-
-    // let cardColumn = document.createElement('div')
-    // cardColumn.className = 'six wide column'
-    // cardColumn.id = 'card-column'
 
     document.querySelector('#main').appendChild(gridContainer)
 
@@ -142,7 +125,8 @@ class User {
 
   renderHabitCard(habit) {
     let cardBase = document.createElement('div')
-    cardBase.className = 'ui card red'
+    cardBase.className = 'ui card'
+    cardBase.id = `card-${habit.id}`
     let cardContent = document.createElement('div')
     cardContent.className = 'content'
     let cardHeader = document.createElement('div')
@@ -186,22 +170,27 @@ class User {
       case counter == 0:
         progress.className = 'ui progress error'
         bar.style.width = '10%'
+        document.getElementById(`card-${habit.id}`).className = 'ui card red'
         break;
       case counter <= 2:
         progress.className = 'ui progress error'
         bar.style.width = '30%'
+        document.getElementById(`card-${habit.id}`).className = 'ui card red'
         break;
       case counter <= 4:
         progress.className = 'ui progress warning'
         bar.style.width = '60%'
+        document.getElementById(`card-${habit.id}`).className = 'ui card yellow'
         break;
       case counter <= 6:
         progress.className = 'ui progress success'
         bar.style.width = '90%'
+        document.getElementById(`card-${habit.id}`).className = 'ui card green'
         break;
       case counter <= 7:
         progress.className = 'ui progress success'
         bar.style.width = '100%'
+        document.getElementById(`card-${habit.id}`).className = 'ui card green'
         break;
     }
 
@@ -262,6 +251,7 @@ class User {
     .then(r => {
       document.getElementById('user-form-background').remove()
       document.getElementById('form-container').remove()
+      document.getElementById('grid-container').remove()
       init()
     })
   }

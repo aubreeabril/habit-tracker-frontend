@@ -124,6 +124,8 @@ class Habit {
   deleteHabit(e) {
     document.getElementById('edit-habit-form').innerHTML = ''
     document.getElementById(`habit-${this.id}`).remove()
+    document.getElementById(`grid-habit-${this.id}`).remove()
+    document.getElementById(`divider-habit-${this.id}`).remove()
     fetch(`${HABITS_URL}/${this.id}`, {
       method: 'DELETE'
     })

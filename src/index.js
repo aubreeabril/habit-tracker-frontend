@@ -337,11 +337,14 @@ function createHabit(e) {
     document.getElementById('edit-habit-form').innerHTML = ''
     newHabit.render(e.target.dataset.userId);
     newHabit.renderCheckboxes()
+
+    console.log(e.target.parentElement.children[1].children[0])
+    e.target.parentElement.children[1].children[0].value = ''
+    e.target.parentElement.children[1].children[2].children[0].value = ''
   })
 }
 
 function createUserHabit(data, userId) {
-
 
   fetch(`${USER_HABITS_URL}`, {
     method: 'POST',
@@ -355,14 +358,19 @@ function createUserHabit(data, userId) {
     })
   })
   .then(r => r.json())
-  .then(json => {})
-}
+  .then(json => {
+    let user = User.all().find(user => {
+      return parseInt(userId) === user.id
+    })
 
-// function findUserHabit(userId, habitId) {
-//   fetch(`${USER_HABITS_URL}`)
-//   .then(r => r.json())
-//   .then(json => console.log(json))
-// }
+    let habit = Habit.all().find(habit => {
+      return habit.id == data.id
+    })
+
+    user.renderHabitStatus(habit)
+  })
+
+}
 
 function getUpdateInfo(e) {
   e.preventDefault()
