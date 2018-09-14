@@ -15,6 +15,17 @@ class User {
     return allUsers
   }
 
+  findMyHabits() {
+    let filteredHabits = []
+    Habit.all().forEach(habit => {
+      habit.users.forEach(user => {
+        if (user.id == this.id)
+        filteredHabits.push(habit)
+      })
+    })
+    return filteredHabits
+  }
+
   render() {
     let list = document.getElementById("users-list");
     let newItem = document.createElement("div");
@@ -51,7 +62,6 @@ class User {
     habitMenuButton.className = 'item';
     habitMenuButton.id = 'newHabitButton';
     habitMenuButton.innerText = 'Add Habit';
-    makeNewHabitForm();
     habitMenuButton.addEventListener('click', e => {
       toggleHabitForm();
     })
@@ -68,11 +78,20 @@ class User {
     document.querySelector("#main").appendChild(habitDiv);
     habitDiv.appendChild(habitList);
 
-    makeTable()
+    makeTable(this.id)
 
-    fetchHabits(this.id);
+    console.log('before show breaks')
+    // we're hitting find my habits before makeHabits
+    let myHabits = this.findMyHabits()
 
-    // makeNewHabitForm(this.id)
+    myHabits.forEach(habit => {
+      habit.render(this.id)
+      habit.renderCheckboxes()
+      habit.checkCheckboxes()
+    })
+
+    makeNewHabitForm(this.id)
+
   }
 
   buildUserHeaderList() {
@@ -115,7 +134,8 @@ class User {
       if (confirm('Are you sure?')) {
         this.deleteUser()
       } else {
-        this.show() // this makes the double form thing happen
+        document.getElementById('add-habit-form').innerHTML = ''
+        this.show()
       }
     })
   }
