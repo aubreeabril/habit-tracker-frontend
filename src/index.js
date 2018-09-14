@@ -263,7 +263,7 @@ function checkBox() {
           // debugger;
           // userHabit = uh;
           let patchData = addUserHabitDate(fullDate, uh);
-          patchUserHabit(patchData, uh.id)
+          patchUserHabit(patchData, uh.id, userId, habitId)
           // console.log(userHabit);
         }
       })
@@ -275,11 +275,8 @@ function addUserHabitDate(date, userHabit) {
   return {dates: [...userHabit.dates, date]}
 }
 
-function patchUserHabit(patchData, userHabitId) {
-  // console.log(date);
-  // console.log(userHabit);
-  // console.log(userHabit.dates);
-
+function patchUserHabit(patchData, userHabitId, userId, habitId) {
+  console.log(patchData)
   fetch(`${USER_HABITS_URL}/${userHabitId}`, {
     method: "PATCH",
     headers: {
@@ -290,9 +287,23 @@ function patchUserHabit(patchData, userHabitId) {
   })
     .then(r => {
       r.json()
-      console.log(r.body)
     })
-    .then(json => console.log(json));
+    .then(json => {
+      console.log(json)
+
+      let currentUser = User.all().find(user => {
+        return user.id == userId
+      })
+
+      let currentHabit = Habit.all().find(habit => {
+        return habit.id == habitId
+      })
+
+      document.querySelector(`#grid-habit-${habitId}`).remove()
+      document.querySelector(`#divider-habit-${habitId}`).remove()
+
+      currentUser.renderHabitStatus(currentHabit)
+    })
 }
 
 function createHabit(e) {
@@ -317,20 +328,12 @@ function createHabit(e) {
   .then(json => {
     let newHabit = new Habit(json)
 
-    // console.log(e.target.dataset.userId)
-
     createUserHabit(json, e.target.dataset.userId)
 
     let user = User.all().find(u => {
       return u.id == e.target.dataset.userId
     })
 
-    // document.getElementById('main').innerHTML = `<div id="users-list" class='ui huge middle aligned selection list'>
-    // </div><div id="add-habit-form">
-    // </div><div id="edit-habit-form">
-    // </div>`
-
-    // document.getElementById('add-habit-form').innerHTML = ''
     document.getElementById('edit-habit-form').innerHTML = ''
     newHabit.render(e.target.dataset.userId);
     newHabit.renderCheckboxes()
@@ -424,24 +427,14 @@ function makeNewHabitForm(userId) {
     return habit.title
   })
 
-  // console.log(habitTitles)
-  // debugger
-
   let uniqueTitles = [...new Set(habitTitles)];
 
   uniqueTitles.forEach(title => {
-    // let usedTitles = [];
-
-    // if (!usedTitles.includes(title)) {
       let div = document.createElement('option')
       div.value = `${title}`
-      // div.setAttribute('data-value', `${habit.title}`)
       div.innerText = title
       dataList.appendChild(div)
-      // usedTitles.push(title)
-    // }
   })
-  //
 
   let descriptionField = document.createElement("div");
   descriptionField.className = "field"

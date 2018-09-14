@@ -8,7 +8,6 @@ class Habit {
     this.user_habits = args.user_habits
     this.users = args.users
     allHabits.push(this)
-    // console.log('constructor')
   }
 
   static all() {
@@ -32,12 +31,6 @@ class Habit {
     })
 
     habitRow.appendChild(habitTd)
-
-    // this.renderCheckboxes()
-
-    // this.checkCheckboxes()
-
-    // makeNewHabitForm(userId) // adds items to dropdown but can't select them
   }
 
   renderCheckboxes() {
@@ -46,7 +39,6 @@ class Habit {
     headers.shift()
 
     headers.forEach(header => {
-      // debugger
       let userId = header.dataset.userId
       let habitId = this.id
 
@@ -71,7 +63,7 @@ class Habit {
     let foundUserHabit = this.user_habits.find(uh => {
       return uh.user_id == userId
     })
-  
+
     foundUserHabit.dates.forEach(date => {
       checkboxes.forEach(cb => {
         if(cb.dataset.fullDate.split(' ').slice(0, 4).join(' ') == date.split(' ').slice(0, 4).join(' ')) {

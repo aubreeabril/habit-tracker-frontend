@@ -78,33 +78,69 @@ class User {
     document.querySelector("#main").appendChild(habitDiv);
     habitDiv.appendChild(habitList);
 
+    // let divider = document.createElement('div')
+    // divider.className = 'ui divider'
+    // document.querySelector('#main').appendChild(divider)
+
+    // let progressDiv = document.createElement('div')
+    // progressDiv.className = 'ten wide column'
+    // progressDiv.id = 'progress-div'
+    //
+    // let progressHeader = document.createElement('h3')
+    // progressHeader.innerText = 'This Week'
+    //
+    // progressDiv.appendChild(progressHeader)
+
+    let gridContainer = document.createElement('div')
+    gridContainer.id = 'grid-container'
+
+    // let cardColumn = document.createElement('div')
+    // cardColumn.className = 'six wide column'
+    // cardColumn.id = 'card-column'
+
+    document.querySelector('#main').appendChild(gridContainer)
+
     makeTable(this.id)
 
-    console.log('before show breaks')
-    // we're hitting find my habits before makeHabits
     let myHabits = this.findMyHabits()
 
     myHabits.forEach(habit => {
       habit.render(this.id)
       habit.renderCheckboxes()
       habit.checkCheckboxes()
-      this.renderHabitCard(habit)
+      this.renderHabitStatus(habit)
     })
 
     makeNewHabitForm(this.id)
 
   }
-  //
-  // loadHabits() {
-  //   console.log(this.habits)
-  //
-  //   this.habits.forEach(habit => {
-  //     this.renderHabitCard(habit)
-  //   })
-  // }
+
+  renderHabitStatus(habit) {
+    let divider = document.createElement('div')
+    divider.className = 'ui divider'
+    divider.id = `divider-habit-${habit.id}`
+    document.querySelector('#grid-container').appendChild(divider)
+
+    let grid = document.createElement('div')
+    grid.className = 'ui two column stackable grid'
+    grid.id = `grid-habit-${habit.id}`
+
+    let cardColumn = document.createElement('div')
+    cardColumn.className = 'six wide column'
+    cardColumn.id = `card-column-${habit.id}`
+
+    let progressDiv = document.createElement('div')
+    progressDiv.className = 'ten wide column'
+    progressDiv.id = `progress-div-${habit.id}`
+
+    document.querySelector('#grid-container').appendChild(grid)
+    grid.appendChild(cardColumn)
+    grid.appendChild(progressDiv)
+
+    this.renderHabitCard(habit)
+  }
 
   renderHabitCard(habit) {
-    console.log(habit.user_habits)
     let cardBase = document.createElement('div')
     cardBase.className = 'ui card red'
     let cardContent = document.createElement('div')
@@ -119,11 +155,58 @@ class User {
     cardExtra.className = 'extra content'
     cardExtra.innerText = `Days completed: ${habit.user_habits[0].dates.length}`
 
-    document.querySelector('#main').appendChild(cardBase)
+    // debugger
+
+    document.querySelector(`#card-column-${habit.id}`).appendChild(cardBase)
     cardBase.appendChild(cardContent)
     cardContent.appendChild(cardHeader)
     cardContent.appendChild(cardDescription)
     cardBase.appendChild(cardExtra)
+
+    this.makeProgressBar(habit)
+  }
+
+  makeProgressBar(habit) {
+    let counter = 0
+
+    document.querySelector(`#habit-${habit.id}`).querySelectorAll('input').forEach(checkbox => {
+      if (checkbox.checked) {
+        counter++
+      }
+    })
+
+    let progressDiv = document.querySelector(`#progress-div-${habit.id}`)
+
+    let progress = document.createElement('div')
+
+    let bar = document.createElement('div')
+    bar.className = 'bar'
+
+    switch(true) {
+      case counter == 0:
+        progress.className = 'ui progress error'
+        bar.style.width = '10%'
+        break;
+      case counter <= 2:
+        progress.className = 'ui progress error'
+        bar.style.width = '30%'
+        break;
+      case counter <= 4:
+        progress.className = 'ui progress warning'
+        bar.style.width = '60%'
+        break;
+      case counter <= 6:
+        progress.className = 'ui progress success'
+        bar.style.width = '90%'
+        break;
+      case counter <= 7:
+        progress.className = 'ui progress success'
+        bar.style.width = '100%'
+        break;
+    }
+
+    progressDiv.appendChild(progress)
+    progress.appendChild(bar)
   }
 
   buildUserHeaderList() {
