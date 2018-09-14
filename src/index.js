@@ -298,10 +298,9 @@ function patchUserHabit(patchData, userHabitId) {
 function createHabit(e) {
   e.preventDefault()
 
-  let habitTitle = event.target.parentElement.children[1].children[0].children[0].value
+  let habitTitle = event.target.parentElement.children[1].children[0].value
 
-  let habitDescription = event.target.parentElement.children[1].children[1].children[0].value
-
+  let habitDescription = event.target.parentElement.children[1].children[2].children[0].value
 
   fetch(`${HABITS_URL}`, {
     method: 'POST',
@@ -318,7 +317,7 @@ function createHabit(e) {
   .then(json => {
     let newHabit = new Habit(json)
 
-    console.log(e.target.dataset.userId)
+    // console.log(e.target.dataset.userId)
 
     createUserHabit(json, e.target.dataset.userId)
 
@@ -364,10 +363,13 @@ function createUserHabit(data, userId) {
 
 function getUpdateInfo(e) {
   e.preventDefault()
+
   let userId = e.target.dataset.userId
   let habitId = e.target.dataset.habitId
   let newTitle = event.target.parentElement.children[1].children[0].children[0].value
+
   let newDescription = event.target.parentElement.children[1].children[1].children[0].value
+
   let data = {habit_id: habitId, title: newTitle, description: newDescription}
   updateHabit(data, userId)
 }
@@ -409,10 +411,13 @@ function makeNewHabitForm(userId) {
   let inputContainer = document.createElement("div");
   inputContainer.className = "equal width fields"
 
-  let titleField = document.createElement("select");
+  let titleField = document.createElement("input");
+  titleField.placeholder = 'title'
+  titleField.type = 'text'
+  titleField.setAttribute('list', 'titles')
   titleField.className = "ui search dropdown"
-  let option = document.createElement('option')
-  option.value = ''
+  let dataList = document.createElement('datalist')
+  dataList.id = 'titles'
 
   // make dropdown items
   let habitTitles = Habit.all().map(habit => {
@@ -432,7 +437,7 @@ function makeNewHabitForm(userId) {
       div.value = `${title}`
       // div.setAttribute('data-value', `${habit.title}`)
       div.innerText = title
-      titleField.appendChild(div)
+      dataList.appendChild(div)
       // usedTitles.push(title)
     // }
   })
@@ -457,6 +462,7 @@ function makeNewHabitForm(userId) {
   habitForm.appendChild(h4Element);
   habitForm.appendChild(inputContainer);
   inputContainer.appendChild(titleField);
+  inputContainer.appendChild(dataList)
   inputContainer.appendChild(descriptionField);
   descriptionField.appendChild(descriptionInput);
   habitForm.appendChild(habitFormSubmit);
